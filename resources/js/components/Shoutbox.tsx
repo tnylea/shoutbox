@@ -153,7 +153,7 @@ export default function Shoutbox() {
                 
                 <div className="shadow-xl border rounded-xl bg-white dark:bg-neutral-800 dark:border-neutral-700">
                         <CollapsibleTrigger asChild>
-                            <div className="py-3 px-4 bg-white/20 rounded-t-xl dark:bg-neutral-800 flex flex-row items-center justify-between space-y-0 cursor-pointer border-b dark:border-neutral-700">
+                            <div className={`py-3 px-4 bg-white/20 ${isOpen ? 'rounded-t-xl' : 'rounded-xl'} dark:bg-neutral-800 flex flex-row items-center justify-between space-y-0 cursor-pointer border-b dark:border-neutral-700`}>
                                 <div className="w-full flex items-center space-x-2">
                                     <h3 className="text-md font-medium dark:text-white">Shoutbox</h3>
                                     <span className={`text-[11px] font-medium ${isConnected ? 'text-neutral-500 dark:text-neutral-300' : 'text-neutral-600 dark:text-neutral-400'} flex items-center bg-neutral-100 dark:bg-neutral-700 rounded-full px-1.5 py-1`}>
