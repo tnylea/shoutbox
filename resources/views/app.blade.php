@@ -4,6 +4,15 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@tnylea">
+        <meta name="twitter:creator" content="@tnylea">
+        <meta name="twitter:url" content="https://shoutbox.laravel.cloud">
+        <meta name="twitter:title" content="Shoutbox Chat Example">
+        <meta name="twitter:description" content="This is a simple Shoutbox chat example app built with Laravel, Inertia.js, React, Reverb, and Echo.">
+        <meta name="twitter:image" content="{{ url('/og-image.jpg') }}">
+        <meta name="twitter:image:alt" content="A screenshot of the Shoutbox demo.">
+
         {{-- Inline script to detect system dark mode preference and apply it immediately --}}
         <script>
             (function() {
