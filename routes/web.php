@@ -12,8 +12,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
     
-    // Shoutbox API routes
-    Route::prefix('api')->group(function () {
+    // Shoutbox API routes - protected by auth middleware
+    Route::prefix('api')->middleware(['auth'])->group(function () {
         Route::get('messages', [\App\Http\Controllers\MessageController::class, 'index']);
         Route::post('messages', [\App\Http\Controllers\MessageController::class, 'store']);
     });

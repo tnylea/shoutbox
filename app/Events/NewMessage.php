@@ -38,7 +38,7 @@ class NewMessage implements ShouldBroadcast
             new Channel('shoutbox'),
         ];
     }
-
+    
     /**
      * The event's broadcast name.
      */
