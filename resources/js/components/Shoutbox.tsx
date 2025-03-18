@@ -44,10 +44,11 @@ export default function Shoutbox() {
         if (!data.content.trim()) return;
         
         try {
-            const response = await axios.post('/api/messages', data);
-            setMessages([...messages, response.data]);
+            // Just send the message, don't update state locally
+            // The Echo broadcast will handle updating the UI
+            await axios.post('/api/messages', data);
             reset('content');
-            scrollToBottom();
+            // No need to scroll here, the useEffect for messages will handle it
         } catch (error) {
             console.error('Error sending message:', error);
         }
@@ -76,7 +77,18 @@ export default function Shoutbox() {
         // Set up connection status listeners
         channel.listen('.message.new', (event: { message: Message }) => {
             console.log('New message received:', event.message);
-            setMessages(prevMessages => [...prevMessages, event.message]);
+            // Check if message already exists to prevent duplicates
+            setMessages(prevMessages => {
+                // Check if this message ID already exists in our messages
+                const messageExists = prevMessages.some(msg => msg.id === event.message.id);
+                if (messageExists) {
+                    // If it exists, don't add it again
+                    return prevMessages;
+                } else {
+                    // If it's new, add it to the list
+                    return [...prevMessages, event.message];
+                }
+            });
             scrollToBottom();
         });
         
@@ -139,12 +151,12 @@ export default function Shoutbox() {
             >
                 {/* No separate trigger button - we'll use the header as the trigger */}
                 
-                <div className="shadow-xl border rounded-xl bg-white">
+                <div className="shadow-xl border rounded-xl bg-white dark:bg-neutral-800 dark:border-neutral-700">
                         <CollapsibleTrigger asChild>
-                            <div className="py-3 px-4 bg-white/20 flex flex-row items-center justify-between space-y-0 cursor-pointer border-b">
+                            <div className="py-3 px-4 bg-white/20 rounded-t-xl dark:bg-neutral-800 flex flex-row items-center justify-between space-y-0 cursor-pointer border-b dark:border-neutral-700">
                                 <div className="w-full flex items-center space-x-2">
-                                    <h3 className="text-md font-medium">Shoutbox</h3>
-                                    <span className={`text-[11px] font-medium ${isConnected ? 'text-gray-500' : 'text-gray-600'} flex items-center bg-gray-100 rounded-full px-1.5 py-1`}>
+                                    <h3 className="text-md font-medium dark:text-white">Shoutbox</h3>
+                                    <span className={`text-[11px] font-medium ${isConnected ? 'text-neutral-500 dark:text-neutral-300' : 'text-neutral-600 dark:text-neutral-400'} flex items-center bg-neutral-100 dark:bg-neutral-700 rounded-full px-1.5 py-1`}>
                                         <span className={`rounded-full ${isConnected ? 'bg-green-400' : 'bg-yellow-400'} block w-3 h-3`}></span>
                                         <span className="px-1">{isConnected ? 'Connected' : 'Not Connected'}</span>
                                     </span>
@@ -152,7 +164,7 @@ export default function Shoutbox() {
                                 <Button
                                     variant="ghost"
                                     size="icon"
-                                    className="h-8 w-8"
+                                    className="h-8 w-8 cursor-pointer"
                                 >
                                     {isOpen ? (
                                         <ChevronDown className="h-4 w-4" />
@@ -167,7 +179,7 @@ export default function Shoutbox() {
                             <div className="p-0">
                                 <div className="h-80 overflow-y-auto p-4 space-y-4">
                                     {messages.length === 0 ? (
-                                        <div className="flex items-center justify-center h-full text-gray-500">
+                                        <div className="flex items-center justify-center h-full text-neutral-500 dark:text-neutral-400">
                                             No messages yet. Start the conversation!
                                         </div>
                                     ) : (
@@ -179,10 +191,10 @@ export default function Shoutbox() {
                                                 </Avatar>
                                                 <div className="flex flex-col">
                                                     <div className="flex items-baseline gap-2">
-                                                        <span className="font-medium text-sm">{message.user.name}</span>
-                                                        <span className="text-xs text-gray-500">{message.created_at}</span>
+                                                        <span className="font-medium text-sm dark:text-white">{message.user.name}</span>
+                                                        <span className="text-xs text-neutral-500 dark:text-neutral-400">{message.created_at}</span>
                                                     </div>
-                                                    <p className="text-sm">{message.content}</p>
+                                                    <p className="text-sm dark:text-neutral-300">{message.content}</p>
                                                 </div>
                                             </div>
                                         ))
@@ -191,7 +203,7 @@ export default function Shoutbox() {
                                 </div>
                             </div>
                             
-                            <div className="p-3 border-t">
+                            <div className="p-3 border-t dark:border-neutral-700">
                                 <form onSubmit={sendMessage} className="flex w-full gap-2">
                                     <Input
                                         placeholder="Type a message..."
